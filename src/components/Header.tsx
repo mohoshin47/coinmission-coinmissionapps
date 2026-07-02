@@ -1,4 +1,5 @@
-import { Bell, RefreshCw } from 'lucide-react';
+import { MessageCircle, RefreshCw } from 'lucide-react';
+import { useGlobalConfig } from '../contexts/GlobalConfigContext';
 
 interface HeaderProps {
   title?: string;
@@ -8,6 +9,15 @@ interface HeaderProps {
   loading?: boolean;
 }
 export default function Header({ title, subtitle, onRefresh, showRefresh = false }: HeaderProps) {
+  const { config } = useGlobalConfig();
+
+  const handleContactClick = () => {
+    const url = config?.contractus;
+    if (url) {
+      window.open(url, '_blank');
+    }
+  };
+
   return (
     <div className="fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full max-w-[720px] h-16 bg-[#081425] border-b border-gray-700">
       
@@ -23,9 +33,13 @@ export default function Header({ title, subtitle, onRefresh, showRefresh = false
             </button>
           )}
 
-          {/* Notification */}
-          <button className="p-2 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition">
-            <Bell className="w-5 h-5 text-white" />
+          {/* Telegram Chat */}
+          <button
+            onClick={handleContactClick}
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition"
+            aria-label="Telegram chat"
+          >
+            <MessageCircle className="w-5 h-5 text-white" />
           </button>
         </div>
       </div>

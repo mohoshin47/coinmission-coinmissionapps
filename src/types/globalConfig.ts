@@ -20,6 +20,7 @@ export interface GlobalConfig {
   min_withdrawal: number;
   daily:Daily;
   adSettings: adSettings;
+  contractus: string;
 }
 
 export interface Daily{

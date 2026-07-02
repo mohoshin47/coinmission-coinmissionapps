@@ -30,7 +30,13 @@ export default function ProfileCardProps({ user }: UserProfileCardProps) {
         <span className="text-gray-400 text-sm">Balance</span>
         <div className="flex items-center gap-2">
           <span className="font-bold text-purple-400">${user.balance.toFixed(4)}</span>
-          <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold">T</div>
+          <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
+            <img
+              src="https://cryptologos.cc/logos/tether-usdt-logo.png"
+              alt="USDT"
+              className="w-5 h-5"
+            />
+          </div>
         </div>
       </div>
     </div>
