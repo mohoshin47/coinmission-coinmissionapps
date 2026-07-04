@@ -7,7 +7,8 @@ export interface Task {
     | "telegram_bot"
     | "telegram_channel"
     | "telegram_group"
-    | "rewarded_popup";
+    | "rewarded_popup"
+    | "watch_ads";
 
   url: string;
 

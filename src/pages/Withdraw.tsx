@@ -80,10 +80,10 @@ export default function Withdraw() {
 
                 <h1 className="mt-2 text-lg  !text-purple-500">
                   ${user?.balance?.toFixed(3) || 0}
-                  <span className="text-lg ml-2 text-white">USDT</span>
+                  <span className="text-lg ml-2 text-white">USD</span>
                 </h1>
 
-                <p className="text-gray-500 text-sm mt-2">Minimum Withdraw: {config?.min_withdraw || 1} USDT</p>
+                <p className="text-gray-500 text-sm mt-2">Minimum Withdraw: {config?.min_withdraw || 1} USD</p>
               </div>
 
               <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center">
@@ -126,7 +126,7 @@ export default function Withdraw() {
           {/* Amount */}
           <div className="mt-4">
             
-            <h3 className="flex items-start justify-start text-white !text-h3 mb-0">Amount (USDT)</h3>
+            <h3 className="flex items-start justify-start text-white !text-h3 mb-0">Amount (USD)</h3>
 
             <div className="flex items-center gap-2 mt-1">
               <input

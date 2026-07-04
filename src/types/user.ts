@@ -5,6 +5,7 @@ export interface User {
   Name: string;
   photoUrl: string;
   balance: number;
+  adcredit: number;
   completedTasks: string[];
   referrals: number;
   totalreferralsincome: number;

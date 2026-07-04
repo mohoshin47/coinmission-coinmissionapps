@@ -6,14 +6,15 @@ import type { Task } from '../types/usertask';
 interface Props {
   task: Task;
   onReload: () => void;
+  onOpenVerification?: (task: Task) => void;
 }
 
-export default function TaskCard({ task, onReload }: Props) {
+export default function TaskCard({ task, onReload, onOpenVerification }: Props) {
   const [remaining, setRemaining] = useState(task.remainingSeconds || 0);
   const [starting, setStarting] = useState(false);
 
   useEffect(() => {
-    if (task.available) return;
+    if (task.available || task.completed) return;
 
     setRemaining(task.remainingSeconds);
 
@@ -44,12 +45,27 @@ export default function TaskCard({ task, onReload }: Props) {
 
   const handleStart = () => {
     if (!task.available || starting) return;
+
+    if (task.type === 'telegram_channel') {
+      setStarting(true);
+      onOpenVerification?.(task);
+      window.setTimeout(() => setStarting(false), 300);
+      return;
+    }
+
     setStarting(true);
     const url = new URL(task.url);
     url.search = '';
     url.searchParams.set('startapp', `task_${task._id}`);
+
+    const shouldOpenAsLink = task.type === 'rewarded_popup' || task.type === 'watch_ads';
+
     if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.openTelegramLink(url.toString());
+      if (shouldOpenAsLink) {
+        window.Telegram.WebApp.openLink(url.toString());
+      } else {
+        window.Telegram.WebApp.openTelegramLink(url.toString());
+      }
     } else {
       window.open(url.toString(), '_blank');
     }
@@ -83,14 +99,22 @@ export default function TaskCard({ task, onReload }: Props) {
 
         <button
           onClick={handleStart}
-          disabled={!task.available || starting}
+          disabled={!task.available || starting || task.completed}
           className={`px-3 py-1 rounded-lg font-semibold transition ${
-            task.available && !starting
-              ? 'bg-violet-600 hover:bg-violet-700 text-white'
-              : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+            task.completed
+              ? 'bg-gray-700 text-green-100 cursor-not-allowed'
+              : task.available && !starting
+                ? 'bg-violet-600 hover:bg-violet-700 text-white'
+                : 'bg-gray-700 text-gray-400 cursor-not-allowed'
           }`}
         >
-          {starting ? 'Opening...' : task.available ? 'Start' : formatTime(remaining)}
+          {starting
+            ? 'Opening...'
+            : task.completed
+              ? 'Completed'
+              : task.available
+                ? 'Start'
+                : formatTime(remaining)}
         </button>
       </div>
     </div>

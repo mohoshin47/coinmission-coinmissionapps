@@ -7,6 +7,7 @@ import { useUser } from '../contexts/UserContext';
 import TaskCard from '../components/TaskCard';
 import ProfileCardProps from '../components/ProfileCardProps';
 import DailyRewardCard from '../components/DailyRewardCard';
+import TelegramJoinVerify from '../components/TelegramJoinVerify';
 import { useGlobalConfig } from '../contexts/GlobalConfigContext';
 import toast from 'react-hot-toast';
 import { claimDailyReward } from '../services/userService';
@@ -18,6 +19,7 @@ export default function Earn() {
   const { config } = useGlobalConfig();
   const [claimLoading, setClaimLoading] = useState(false);
   const [refreshLoading, setRefreshLoading] = useState(false);
+  const [verificationTask, setVerificationTask] = useState<Task | null>(null);
   const firstLoad = useRef(false);
 
   useEffect(() => {
@@ -122,7 +124,14 @@ export default function Earn() {
             {filteredTasks.length === 0 ? (
               <div className="text-center py-10 text-slate-400">No Tasks Available</div>
             ) : (
-              filteredTasks.map((task) => <TaskCard key={task._id} task={task} onReload={loadTasks} />)
+              filteredTasks.map((task) => (
+                <TaskCard
+                  key={task._id}
+                  task={task}
+                  onReload={loadTasks}
+                  onOpenVerification={(selectedTask) => setVerificationTask(selectedTask)}
+                />
+              ))
             )}
           </div>
         ) : (
@@ -132,6 +141,17 @@ export default function Earn() {
           </div>
         )}
       </div>
+
+      {verificationTask && (
+        <div className="fixed inset-0 z-50 bg-[#050B17]/90 backdrop-blur-sm">
+          <TelegramJoinVerify
+            taskId={verificationTask._id}
+            taskUrl={verificationTask.url}
+            reward={verificationTask.reward}
+            onClose={() => setVerificationTask(null)}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -21,6 +21,7 @@ export interface GlobalConfig {
   daily:Daily;
   adSettings: adSettings;
   contractus: string;
+  creator: creator;
 }
 
 export interface Daily{
@@ -31,4 +32,9 @@ export interface Daily{
 
 export interface adSettings{
   enabled: boolean;
+}
+
+export interface creator{
+minimumreward : number;
+minimumtask : number;
 }
