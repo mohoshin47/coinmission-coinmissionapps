@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const API_URL = 'https://minitaskapi.onrender.com';
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://minitaskapi.onrender.com';
+// const API_URL = 'http://localhost:3000';
 export const getUser = async (telegramId: number) => {
   const response = await axios.get(`${API_URL}/api/user/getuser/${telegramId}`);
   return response.data.data;
