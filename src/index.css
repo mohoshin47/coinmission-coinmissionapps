@@ -46,7 +46,7 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 
 body {
@@ -56,7 +56,7 @@ body {
 
   background: var(--background);
   color: var(--text);
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
@@ -72,7 +72,7 @@ body {
   max-width: 720px;
   min-height: 100vh;
   margin: 0 auto;
-  overflow-x: hidden;
+  overflow-x: auto;
   background: #081425;
 }
 

@@ -22,16 +22,22 @@ export interface GlobalConfig {
   adSettings: adSettings;
   contractus: string;
   creator: creator;
+  vpnalllowed: boolean;
+ 
 }
 
 export interface Daily{
   daily_task_target:number;
   daily_checkin:number;
   daily_link:string;
+  breaktime: number;
 }
 
 export interface adSettings{
   enabled: boolean;
+  visittimes: number;
+  MonetagZoneId: string;
+  
 }
 
 export interface creator{

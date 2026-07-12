@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getUser } from '../services/userService';
+import { getUser, registerUser } from '../services/userService';
+import { getDeviceFingerprint } from '../utils/fingerprint';
 
 interface UserContextType {
   user: any;
@@ -19,19 +20,67 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const getTelegramPayload = () => {
+    const tg = window.Telegram?.WebApp;
+
+    const telegramUser = tg?.initDataUnsafe?.user;
+    const telegramId = telegramUser?.id ?? 6249158607;
+    const username = telegramUser?.username ?? null;
+    const Name = telegramUser ? `${telegramUser.first_name ?? ''}${telegramUser.last_name ? ` ${telegramUser.last_name}` : ''}`.trim() : '';
+    const photoUrl = telegramUser?.photo_url ?? '';
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const refQuery = searchParams.get('ref');
+    const startParam = tg?.initDataUnsafe?.start_param;
+
+    const referredBy = Number(refQuery ?? startParam ?? '') || null;
+
+    return {
+      telegramId,
+      username,
+      Name,
+      photoUrl,
+      referredBy,
+    };
+  };
+
   const loadUser = async () => {
     try {
-      let telegramId = 6249158607;
+      const { telegramId, username, Name, photoUrl, referredBy } = getTelegramPayload();
 
-      const tg = window.Telegram?.WebApp;
-
-      if (tg?.initDataUnsafe?.user) {
-        telegramId = tg.initDataUnsafe.user.id;
+      if (!telegramId) {
+        console.log('No telegramId available to load user');
+        return;
       }
 
-      const data = await getUser(telegramId);
+      try {
+        const data = await getUser(telegramId);
 
-      setUser(data);
+        if (data && data.telegramId) {
+          setUser(data);
+          return;
+        }
+      } catch (error: any) {
+        if (error.response?.status !== 404) {
+          console.log('Could not load user:', error);
+          return;
+        }
+      }
+
+      const deviceFingerprint = await getDeviceFingerprint();
+
+      const registerResponse = await registerUser({
+        telegramId,
+        username,
+        Name: Name || '',
+        photoUrl: photoUrl || '',
+        referredBy,
+        deviceFingerprint,
+      });
+
+      if (registerResponse?.success || registerResponse?.exists) {
+        setUser(registerResponse.user);
+      }
     } catch (err) {
       console.log(err);
     } finally {

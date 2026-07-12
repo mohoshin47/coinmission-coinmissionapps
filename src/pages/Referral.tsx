@@ -5,18 +5,11 @@ import ReferralCard from "../components/ReferralCard";
 export default function Referral() {
   return (
     <div>
-         <div>
-          <Header title="Referral" subtitle="Users" />
-          </div>
+      <Header title="Referral" subtitle="Users" />
       
-      <div className="pt-20 pb-24 overflow-y-auto h-screen px-3  no-scrollbar ">
-        
+      <div className="h-dvh overflow-y-auto px-2.5 pb-20 pt-[72px] no-scrollbar sm:px-3">
         <ReferralCard />
-        
-
       </div>
-
-
     </div>
   );
 }

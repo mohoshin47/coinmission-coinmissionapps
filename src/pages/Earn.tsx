@@ -1,34 +1,60 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
 import Header from '../components/Header';
 import TaskTabs from '../components/TaskTabs';
-import { getuserTasks } from '../services/userService';
 import type { Task } from '../types/usertask';
 import { useUser } from '../contexts/UserContext';
 import TaskCard from '../components/TaskCard';
 import ProfileCardProps from '../components/ProfileCardProps';
 import DailyRewardCard from '../components/DailyRewardCard';
 import TelegramJoinVerify from '../components/TelegramJoinVerify';
+import WebsiteVisitVerify from '../components/WebsiteVisitVerify';
 import { useGlobalConfig } from '../contexts/GlobalConfigContext';
-import toast from 'react-hot-toast';
-import { claimDailyReward } from '../services/userService';
+import { checkCountry, getuserTasks } from '../services/userService';
+
 
 export default function Earn() {
   const { user, loading, loadUser } = useUser();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [active, setActive] = useState<'all' | 'social' | 'website' | 'ads'>('all');
   const { config } = useGlobalConfig();
-  const [claimLoading, setClaimLoading] = useState(false);
+  const [claimLoading] = useState(false);
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [verificationTask, setVerificationTask] = useState<Task | null>(null);
+  const [countryBlocked, setCountryBlocked] = useState(false);
+  const [countryMessage, setCountryMessage] = useState('');
   const firstLoad = useRef(false);
 
   useEffect(() => {
-    if (!user?.telegramId) return;
-    if (firstLoad.current) return;
-    firstLoad.current = true;
-    loadTasks();
-  }, [user?.telegramId]);
+  if (!user?.telegramId || !config) return;
+  if (firstLoad.current) return;
 
+  firstLoad.current = true;
+
+  initializeEarn();
+}, [user?.telegramId, config]);
+
+  async function initializeEarn() {
+    try {
+      // VPN/Country check only when enabled
+      if (config?.vpnalllowed) {
+        const result = await checkCountry();
+
+        if (!result.allow) {
+          setCountryBlocked(true);
+          setCountryMessage(result.message);
+          return;
+        }
+      }
+
+      setCountryBlocked(false);
+      await loadTasks();
+
+    
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   async function loadTasks() {
     try {
@@ -49,10 +75,16 @@ export default function Earn() {
     }
 
     if (active === 'ads') {
-      return tasks.filter((task) => task.type === 'rewarded_popup');
+      return tasks.filter((task) => task.type === 'rewarded_popup' || task.type === 'watch_ads');
     }
 
-    return tasks;
+    return tasks.filter(
+      (task) =>
+        task.type === 'website_visitor' ||
+        task.type === 'custom_url' ||
+        task.type === 'youtube_video' ||
+        task.type === 'facebook_video',
+    );
   }, [tasks, active]);
 
   // console.log("test: ",filteredTasks)
@@ -63,66 +95,57 @@ export default function Earn() {
 
   // const [tasksCompleted, setTasksCompleted] = useState(1);
 
-  const handleClaim = async () => {
-    if (claimLoading) return;
-    setClaimLoading(true);
-    const url = config?.daily?.daily_link || 'https://google.com';
-    if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.openLink(url);
-    } else {
-      window.open(url, '_blank');
-    }
-    setTimeout(async () => {
-      try {
-        const res = await claimDailyReward(user.telegramId);
-        if (res.success) {
-          toast.success('Reward Claimed!');
-          await loadUser();
-        }
-      } catch (err: any) {
-        toast.error(err.response?.data?.message || 'Claim failed');
-      } finally {
-        setClaimLoading(false);
-      }
-    }, 60000); // 1 minute
-  };
 
   const handleRefresh = async () => {
-    setRefreshLoading(true);
-    try {
-      await loadUser();
-      await loadTasks();
-    } finally {
-      setRefreshLoading(false);
-    }
-  };
+  setRefreshLoading(true);
+
+  try {
+    await loadUser();
+    await initializeEarn();
+  } finally {
+    setRefreshLoading(false);
+  }
+};
 
   return (
-    <div>
+    <div className="min-h-[100svh] bg-[#050B17]">
       <Header title="Mini" subtitle="Task" onRefresh={handleRefresh} showRefresh loading={refreshLoading} />
 
-      <div className="pt-20 pb-24 overflow-y-auto h-screen px-3  no-scrollbar ">
+      <div className="h-[100svh] overflow-y-auto overflow-x-auto no-scrollbar px-3 pb-24 pt-[76px]">
         {/* <User_Profile_Card user={user} /> */}
         <ProfileCardProps user={user} />
 
-        <div className="mt-4">
-          {/* <RewardCard /> */}
+        {user?.vipuser ? (
+          <div className="mt-3">
+            {/* <RewardCard /> */}
 
-          <DailyRewardCard
-            tasksCompleted={user?.totaltaskscompleted ?? 0}
-            totalTasks={config?.daily?.daily_task_target ?? 0}
-            rewardAmount={config?.daily?.daily_checkin ?? 0}
-            loading={claimLoading}
-            onClaim={handleClaim}
-          />
-        </div>
+            <DailyRewardCard
+              user={user}
+              rewardAmount={config?.daily?.daily_checkin ?? 0}
+              totalTasks={config?.daily?.daily_task_target ?? 0}
+              loading={claimLoading}
+            />
+          </div>
+        ) : null}
 
         <TaskTabs active={active} setActive={setActive} />
 
-        {config?.adSettings?.enabled ? (
-          <div className="mt-4 space-y-3">
+        {countryBlocked ? (
+          <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-center">
+            <div className="text-lg font-bold text-red-400">Task Access Restricted</div>
+
+            <p className="mt-2 text-sm text-slate-300">{countryMessage}</p>
+
+            <p className="mt-3 text-xs text-slate-500">
+              Please connect to a VPN and choose a supported country, then reopen the Mini App.
+            </p>
+          </div>
+        ) : config?.adSettings?.enabled? (
+          <div className="mt-3 space-y-2.5">
             {filteredTasks.length === 0 ? (
-              <div className="text-center py-10 text-slate-400">No Tasks Available</div>
+              <div className="rounded-lg border border-[#1D2940] bg-[#091322] px-4 py-8 text-center text-sm text-slate-400">
+                No Tasks Available
+              </div>
             ) : (
               filteredTasks.map((task) => (
                 <TaskCard
@@ -135,7 +158,7 @@ export default function Earn() {
             )}
           </div>
         ) : (
-          <div className="mt-6 rounded-xl border border-[#2A3146] bg-[#111827] p-5 text-center">
+          <div className="mt-4 rounded-lg border border-[#2A3146] bg-[#111827] p-4 text-center">
             <h3 className="text-white text-h3">Tasks are temporarily disabled</h3>
             <p className="mt-2 text-sm text-slate-400">Please check back later.</p>
           </div>
@@ -144,12 +167,16 @@ export default function Earn() {
 
       {verificationTask && (
         <div className="fixed inset-0 z-50 bg-[#050B17]/90 backdrop-blur-sm">
-          <TelegramJoinVerify
-            taskId={verificationTask._id}
-            taskUrl={verificationTask.url}
-            reward={verificationTask.reward}
-            onClose={() => setVerificationTask(null)}
-          />
+          {verificationTask.type === 'telegram_channel' ? (
+            <TelegramJoinVerify
+              taskId={verificationTask._id}
+              taskUrl={verificationTask.url}
+              reward={verificationTask.reward}
+              onClose={() => setVerificationTask(null)}
+            />
+          ) : (
+            <WebsiteVisitVerify task={verificationTask} onClose={() => setVerificationTask(null)} />
+          )}
         </div>
       )}
     </div>

@@ -12,4 +12,7 @@ export interface User {
   totaltaskscompleted: number;
   referredBy: number | null;
   accountStatus: "active" | "inactive" | "banned";
+  vipuser: boolean;
+  dailyadsshow: number;
+  lastAdClickedAt?: string | null;
 }

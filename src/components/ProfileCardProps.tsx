@@ -11,22 +11,22 @@ export default function ProfileCardProps({ user }: UserProfileCardProps) {
   const profileImage = 'astronaut.png'; // Replace with actual image path or URL
 
   return (
-    <div className="flex items-center justify-between bg-gray-900 border border-slate-700/40 text-white rounded-lg p-3 shadow-lg w-full  mx-auto">
+    <div className="flex w-full items-center justify-between gap-3 rounded-lg border border-slate-700/40 bg-gray-900 p-3 text-white shadow-lg">
       {/* Left side: Avatar + Info */}
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         {/* Avatar placeholder */}
-        <div className="w-12 h-12 rounded-full overflow-hidden">
+        <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full">
           <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
         </div>
 
-        <div className="flex flex-col items-start">
-          <span className="text-h3">{user.Name}</span>
-          <span className="text-gray-400 text-sm">@{user.username}</span>
+        <div className="flex min-w-0 flex-col items-start">
+          <span className="max-w-full truncate text-h3">{user.Name}</span>
+          <span className="max-w-full truncate text-sm text-gray-400">@{user.username}</span>
         </div>
       </div>
 
       {/* Right side: Balance */}
-      <div className="flex flex-col items-end">
+      <div className="flex shrink-0 flex-col items-end">
         <span className="text-gray-400 text-sm">Balance</span>
         <div className="flex items-center gap-2">
           <span className="font-bold text-purple-400">${user.balance.toFixed(4)}</span>

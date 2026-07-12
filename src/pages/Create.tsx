@@ -215,106 +215,106 @@ export default function Create() {
   };
 
   return (
-    <div>
+    <div className="h-dvh overflow-y-auto bg-[#050B17] px-2.5 pb-24 pt-[72px] no-scrollbar sm:px-3">
       {/* Task Type */}
       <Header title="Create" subtitle="Task" />
-      <div className="pt-20 pb-4 px-3 overflow-y-auto  no-scrollbar">
-         <div className="flex items-start">
-    <h2 className="text-h2 !text-white">
-      1. Select Task Type
-    </h2>
-  </div>
+      <section>
+        <div className="flex items-start">
+          <h2 className="text-[18px] font-semibold leading-6 !text-white sm:text-h2">1. Select Task Type</h2>
+        </div>
 
         <TaskTypeSelector active={active} setActive={setActive} />
 
         {/* Task Details */}
         <div>
-          <h2 className="!text-white text-h2 !mb-1 !mt-4">2. Task Details</h2>
+          <h2 className="!mb-1 !mt-4 text-[18px] font-semibold leading-6 !text-white sm:text-h2">2. Task Details</h2>
 
-          <div className="rounded-xl border border-slate-800 bg-[#0B1320] p-3 space-y-4">
+          <div className="space-y-2.5 rounded-xl border border-slate-800 bg-[#0B1320] p-3 sm:space-y-3">
             {/* Dynamic Input */}
             <div className="flex flex-col items-start">
-              <label className="text-gray-300 text-sm block mb-1">{currentConfig.label}</label>
+              <label className="mb-1 block text-sm text-gray-300">{currentConfig.label}</label>
               <input
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder={currentConfig.placeholder}
-                className="w-full h-12 rounded-xl border border-slate-700 bg-[#111827] px-4 text-white"
+                className="h-10 w-full rounded-lg border border-slate-700 bg-[#111827] px-3 text-sm text-white placeholder:text-slate-500 sm:px-3.5"
               />
               {active === 'telegram_channel' && (
                 <button
                   type="button"
                   onClick={handleCopyBotName}
-                  className="mt-2 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-left text-sm text-amber-200/80"
+                  className="mt-2 w-full rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-left !text-xs leading-5 text-amber-200/80"
                 >
-                  Tap to copy bot name {config?.bot_link ? (config.bot_link.startsWith('@') ? config.bot_link : `@${config.bot_link}`) : ''} and make sure it is added as an administrator to this channel before creating the task.
+                  Tap to copy{' '}
+                  {config?.bot_link ? (config.bot_link.startsWith('@') ? config.bot_link : `@${config.bot_link}`) : ''}{' '}
+                  and make sure it is added as an administrator to this channel before creating the task.
                 </button>
               )}
             </div>
 
             {/* Reward + Max Users */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
-                <label className="text-gray-300 text-sm block mb-1">Reward per User (USD)</label>
+                <label className="mb-1 block text-xs leading-5 text-gray-300 sm:text-sm">Reward/User (USD)</label>
                 <input
                   type="number"
                   value={reward}
                   onChange={(e) => setReward(e.target.value)}
                   placeholder="0.01 USD"
-                  className="w-full h-12 rounded-xl border border-slate-700 bg-[#111827] px-4 text-white"
+                  className="h-10 w-full rounded-lg border border-slate-700 bg-[#111827] px-3 text-sm text-white placeholder:text-slate-500 sm:px-3.5"
                 />
               </div>
 
               <div>
-                <label className="text-gray-300 text-sm block mb-1">Task Limit</label>
+                <label className="mb-1 block text-xs leading-5 text-gray-300 sm:text-sm">Task Limit</label>
                 <input
                   type="number"
                   value={limit}
                   onChange={(e) => setLimit(e.target.value)}
                   placeholder="200"
-                  className="w-full h-12 rounded-xl border border-slate-700 bg-[#111827] px-4 text-white"
+                  className="h-10 w-full rounded-lg border border-slate-700 bg-[#111827] px-3 text-sm text-white placeholder:text-slate-500 sm:px-3.5"
                 />
               </div>
             </div>
 
             {/* Total Cost */}
-            <div className="rounded-xl bg-[#111827] border border-slate-700 p-3 flex justify-between items-center">
-              <span className="text-gray-400">Total Budget</span>
-              <span className="text-h1 text-purple-500">{totalBudget.toFixed(3)} USD</span>
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-slate-700 bg-[#111827] px-3 py-2.5">
+              <span className="shrink-0 text-sm text-gray-400">Total Budget</span>
+              <span className="min-w-0 break-words text-right text-[18px] font-bold leading-6 text-purple-500 sm:text-[20px]">
+                {totalBudget.toFixed(3)} USD
+              </span>
             </div>
 
             {/* Create Button */}
             <button
               onClick={handleCreateTask}
-              className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-violet-500 text-white font-semibold flex items-center justify-center gap-2"
+              className="flex h-11 w-full items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-purple-800 to-violet-700 text-xs font-medium text-white transition-transform duration-150 active:scale-95"
             >
-              <Plus size={20} />
+              <Plus size={16} />
               Create Task
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
-       <div className="mb-1 flex items-start ms-4">
-    <h2 className="text-h2 !text-white">
-      3. Last Created Tasks
-    </h2>
-  </div>
+      <section className="mt-4">
+        <div className="mb-1 flex items-start">
+          <h2 className="text-[18px] font-semibold leading-6 !text-white sm:text-h2">3. Last Created Tasks</h2>
+        </div>
 
-      <div className="mb-24">
         {tasks.length === 0 ? (
-          <div className="mb-24 mx-4 rounded-2xl border border-dashed border-slate-700 bg-[#0B1320] p-6 text-center">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-purple-600/20 text-purple-400">
+          <div className="rounded-xl border border-dashed border-slate-700 bg-[#0B1320] p-5 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-purple-600/20 text-purple-400">
               <Plus size={24} />
             </div>
-            <h3 className="text-lg font-semibold text-white">No task history yet</h3>
+            <h3 className="text-h3 text-white">No task history yet</h3>
             <p className="mt-2 text-sm text-slate-400">
               Create your first task and it will appear here instantly.
             </p>
           </div>
         ) : (
-          <div className="space-y-4 mx-4">
+          <div className="space-y-3">
             {tasks.map((task) => (
               <CreatedTaskCard
                 key={task._id}
@@ -326,7 +326,7 @@ export default function Create() {
             ))}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

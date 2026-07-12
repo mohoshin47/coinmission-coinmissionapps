@@ -56,6 +56,18 @@ export const claimDailyReward = async (telegramId: number) => {
   return data;
 };
 
+export const registerUser = async (payload: {
+  telegramId: number;
+  username?: string | null;
+  Name?: string;
+  photoUrl?: string;
+  referredBy?: number | null;
+  deviceFingerprint?: string | null;
+}) => {
+  const response = await axios.post(`${API_URL}/api/user/register`, payload);
+  return response.data;
+};
+
 export async function createTask(data: { type: string; url: string; reward: number; createdBy: number; maxComplete: number }) {
   const res = await axios.post(`${API_URL}/api/task/create`, data);
   return res.data;
@@ -88,5 +100,19 @@ export async function completeTask(taskId: string, telegramId: number) {
     telegramId,
     taskId,
   });
+  return data;
+}
+
+export interface CheckCountryResponse {
+  success: boolean;
+  allow: boolean;
+  message: string;
+  country?: string;
+}
+
+export async function checkCountry() {
+  const { data } = await axios.get<CheckCountryResponse>(
+    `${API_URL}/api/user/checkcountry`
+  );
   return data;
 }

@@ -44,12 +44,21 @@ export default function TaskCard({ task, onReload, onOpenVerification }: Props) 
   };
 
   const handleStart = () => {
-    if (!task.available || starting) return;
+    if (!task.available || starting || task.completed) return;
 
-    if (task.type === 'telegram_channel') {
+    const shouldOpenVerification = [
+      'telegram_channel',
+      'telegram_bot',
+      'telegram_group',
+      'youtube_video',
+      'facebook_video',
+      'website_visitor',
+      'custom_url',
+    ].includes(task.type);
+
+    if (shouldOpenVerification) {
       setStarting(true);
       onOpenVerification?.(task);
-      window.setTimeout(() => setStarting(false), 300);
       return;
     }
 
@@ -68,6 +77,7 @@ export default function TaskCard({ task, onReload, onOpenVerification }: Props) 
       }
     } else {
       window.open(url.toString(), '_blank');
+      console.log('Opened in new tab:', url.toString());
     }
   };
 
@@ -85,22 +95,22 @@ export default function TaskCard({ task, onReload, onOpenVerification }: Props) 
   };
 
   return (
-    <div className="flex items-center justify-between bg-[#111827] border border-[#2A3146] rounded-xl p-3">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center">{getIcon()}</div>
-        <div className="flex flex-col items-start">
-          <h4 className="text-h3">{task.title}</h4>
-          <p className="text-gray-400 text-sm">{task.description}</p>
+    <div className="flex items-center justify-between gap-3 rounded-lg border border-[#2A3146] bg-[#111827] p-3">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-600">{getIcon()}</div>
+        <div className="flex min-w-0 flex-col items-start">
+          <h4 className="max-w-full truncate text-[15px] font-semibold leading-5 text-white">{task.title}</h4>
+          <p className="max-w-full truncate text-sm text-gray-400">{task.description}</p>
         </div>
       </div>
 
-      <div className="flex flex-col items-end gap-0">
-        <span className="text-violet-400 font-bold">${task.reward.toFixed(3)}</span>
+      <div className="flex w-[86px] shrink-0 flex-col items-end gap-1">
+        <span className="max-w-full truncate text-sm font-bold text-violet-400">${task.reward.toFixed(3)}</span>
 
         <button
           onClick={handleStart}
           disabled={!task.available || starting || task.completed}
-          className={`px-3 py-1 rounded-lg font-semibold transition ${
+          className={`h-7 w-full rounded-lg px-2 text-xs font-semibold transition ${
             task.completed
               ? 'bg-gray-700 text-green-100 cursor-not-allowed'
               : task.available && !starting

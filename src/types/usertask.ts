@@ -7,6 +7,10 @@ export interface Task {
     | "telegram_bot"
     | "telegram_channel"
     | "telegram_group"
+    | "youtube_video"
+    | "facebook_video"
+    | "website_visitor"
+    | "custom_url"
     | "rewarded_popup"
     | "watch_ads";
 

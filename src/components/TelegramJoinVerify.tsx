@@ -53,8 +53,8 @@ export default function TelegramJoinVerify({ taskId, taskUrl, reward, onClose }:
   };
 
   return (
-    <div className="min-h-screen bg-[#0B1320] flex flex-col items-center justify-center px-4">
-      <div className="w-full  rounded-2xl border border-slate-700 bg-[#131D2D] shadow-lg p-4 space-y-4 relative">
+    <div className="min-h-screen bg-[#0B1320] flex flex-col items-center justify-center px-3">
+      <div className="w-full  rounded-2xl border border-slate-700 bg-[#131D2D] shadow-lg p-3 space-y-3 relative">
         {onClose && (
           <button
             onClick={onClose}
@@ -69,7 +69,7 @@ export default function TelegramJoinVerify({ taskId, taskUrl, reward, onClose }:
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500/15">
             <Send className="text-cyan-400" size={28} />
           </div>
-          <h2 className="text-2xl font-bold text-white">Join Telegram Channel</h2>
+          <h2 className="text-h2 text-white">Join Telegram Channel</h2>
         </div>
 
         {/* Description */}
@@ -80,7 +80,7 @@ export default function TelegramJoinVerify({ taskId, taskUrl, reward, onClose }:
         {/* Channel Info */}
         <div className="rounded-lg border border-slate-700 bg-[#111827] p-4 space-y-2">
           <p className="text-slate-400 text-sm">Channel:</p>
-          <h3 className="text-white font-semibold text-lg">{channelName}</h3>
+          <h3 className="text-white  text-h3">{channelName}</h3>
           <p className="text-cyan-400">Task ID: {taskId || "-"}</p>
 
           <div className="flex justify-between text-slate-300 text-sm mt-3">
