@@ -1,0 +1,27 @@
+# CoinBox Telegram Mini App — Rules
+
+## Core Rules
+
+Build CoinBox Telegram Mini App using:
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Telegram Mini Apps SDK
+
+The Mini App must be mobile-first, fast, secure, and optimized for Telegram users.
+
+Owner-provided features always have the highest priority.
+Never remove or replace requested features.
+
+---
+
+## UI Rules
+
+- Optimize for 360dp × 720dp mobile screen
+- Modern premium crypto/meme-token design
+- Dark CoinBox branding
+- Smooth animations and micro-interactions
+- Responsive on all devices
+- Simple and user-friendly navigation

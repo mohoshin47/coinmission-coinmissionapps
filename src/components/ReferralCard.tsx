@@ -156,7 +156,7 @@ export default function ReferralCard() {
 
         <div className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-left">
           <h3 className="text-[24px] font-bold leading-8 text-purple-200">
-            10%
+            {config?.refer_commition?` ${config?.refer_commition}%` : "10%"}
           </h3>
           <p className="mt-0.5 text-xs text-slate-300">
             Lifetime Commission

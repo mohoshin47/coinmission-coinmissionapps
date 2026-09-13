@@ -9,6 +9,7 @@ interface DailyRewardProps {
   rewardAmount: number;
   totalTasks?: number;
   loading?: boolean;
+  countryBlocked?: boolean;
 }
 
 const DailyRewardCard: React.FC<DailyRewardProps> = ({
@@ -16,6 +17,7 @@ const DailyRewardCard: React.FC<DailyRewardProps> = ({
   rewardAmount,
   totalTasks,
   loading = false,
+  countryBlocked = false,
 }) => {
   const { config } = useGlobalConfig();
   const { loadUser } = useUser();
@@ -26,8 +28,9 @@ const DailyRewardCard: React.FC<DailyRewardProps> = ({
   const targetCount = totalTasks ?? config?.daily?.daily_task_target ?? 0;
   const targetReached = targetCount > 0 && completedCount >= targetCount;
   const breakTimeMinutes = config?.daily?.breaktime ?? 0;
+  const taskEnabled = config?.daily?.taskonoff ?? false;
   const lastAdClickedAt = user?.lastAdClickedAt ? new Date(user.lastAdClickedAt) : null;
-  const canClaim = !loading && !targetReached && cooldownSeconds === 0 && !cooldownActive;
+  const canClaim = !loading && !targetReached && cooldownSeconds === 0 && !cooldownActive && !countryBlocked && taskEnabled;
   const isButtonDisabled = !canClaim;
 
   const getInitialCooldownSeconds = () => {
@@ -45,7 +48,7 @@ const DailyRewardCard: React.FC<DailyRewardProps> = ({
   };
 
   useEffect(() => {
-    console.log(user);
+    // console.log(user);
     if (cooldownActive) return;
 
     if (lastAdClickedAt && breakTimeMinutes > 0) {
@@ -99,7 +102,7 @@ const DailyRewardCard: React.FC<DailyRewardProps> = ({
   };
 
   return (
-    <div className="w-full rounded-lg border border-[#2e1d51] bg-gradient-to-br from-[#140c3a] to-[#070d1d] p-3.5 text-white shadow-lg">
+    <div className="w-full flex flex-col rounded-lg border border-[#2e1d51] bg-gradient-to-br from-[#140c3a] to-[#070d1d] p-3.5 text-white shadow-lg">
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-white/10">
@@ -108,7 +111,7 @@ const DailyRewardCard: React.FC<DailyRewardProps> = ({
           <div className="flex min-w-0 flex-col items-start">
             <h4 className="max-w-full truncate text-h3 text-white">Daily Task</h4>
             <div className="flex max-w-full items-center gap-1.5 text-sm">
-              <span className="text-gray-300">Reward</span>
+              <span className="text-gray-300">Reward : </span>
               <span className="text-purple-400 font-bold">${rewardAmount.toFixed(3)}</span>
             </div>
           </div>
@@ -119,16 +122,26 @@ const DailyRewardCard: React.FC<DailyRewardProps> = ({
         </div>
       </div>
 
+      <div className="mx-auto mt-5 mb-2 h-4 w-20 rounded-full bg-white/10 animate-pulse" />
+
       <button
         onClick={handleClick}
         disabled={isButtonDisabled}
-        className={`mt-4 h-11 w-full rounded-lg text-sm font-semibold transition duration-150 active:scale-95 ${
+        className={`mt-2 h-11 w-full rounded-lg text-sm font-semibold transition duration-150 active:scale-95 ${
           canClaim
             ? 'bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white'
             : 'bg-gray-700 text-gray-400 cursor-not-allowed'
         }`}
       >
-        {loading ? 'Claiming...' : canClaim ? 'Start Task' : cooldownSeconds > 0 ? `Wait ${cooldownSeconds}s` : 'Task not available'}
+        {loading
+          ? 'Claiming...'
+          : countryBlocked
+          ? 'Country restricted'
+          : canClaim
+          ? 'Watch Ad'
+          : cooldownSeconds > 0
+          ? `Wait ${cooldownSeconds}s`
+          : 'Ads not available'}
       </button>
     </div>
   );

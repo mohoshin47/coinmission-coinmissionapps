@@ -15,4 +15,5 @@ export interface User {
   vipuser: boolean;
   dailyadsshow: number;
   lastAdClickedAt?: string | null;
+  totalAdsClicked: number;
 }

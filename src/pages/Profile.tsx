@@ -2,10 +2,12 @@ import Header from "../components/Header";
 import {
   BadgeCheck,
   Copy,
+  Crown,
   Gift,
   IdCard,
   Medal,
   ShieldCheck,
+  Sparkles,
   TicketPercent,
   Users,
   Wallet,
@@ -35,6 +37,7 @@ export default function Profile() {
   const adCredit = Number(user?.adcredit || 0);
   const referralIncome = Number(user?.totalreferralsincome || 0);
   const status = user?.accountStatus || "inactive";
+ const isVipEligible = user?.vipuser === true || user?.totalAdsClicked >= 5 || user?.totalAdsShow >= 10;
   const statusClass =
     status === "active"
       ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
@@ -48,6 +51,10 @@ export default function Profile() {
       duration: 2000,
       position: "top-center",
     });
+  };
+
+  const handleVipAccess = () => {
+    window.open("https://telegram.me/+bKWFJI1xgwZhMGM1", "_blank", "noopener,noreferrer");
   };
 
   const applyPromo2 = async () => {
@@ -235,6 +242,59 @@ export default function Profile() {
             </button>
           </div>
         </section>
+
+        {isVipEligible && (
+          <section
+            className="mt-3 overflow-hidden rounded-2xl border border-[rgba(59,130,246,.18)] bg-[linear-gradient(135deg,_#13233A_0%,_#16314A_45%,_#1B2440_100%)] p-3 shadow-[0_0_20px_rgba(59,130,246,0.12)] sm:p-4"
+            style={{ animation: "vipFadeIn 0.35s ease-out" }}
+          >
+            <div className="relative">
+              <div className="mb-3 flex items-start justify-between gap-2">
+                <div className="flex-1 text-left">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={18} className="text-sky-300" />
+                    <h3 className="text-[15px] font-semibold text-white">VIP Access</h3>
+                  </div>
+                  <p className="mt-1 text-sm leading-5 text-[#AFC4E6]">
+                    Unlock exclusive VIP tasks and higher rewards.
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {[
+                      "Premium Tasks",
+                      "Higher Rewards",
+                      "Fast Withdraw",
+                      "Priority Support",
+                    ].map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full border border-[rgba(59,130,246,.20)] bg-[rgba(59,130,246,.10)] px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#7DD3FC]"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-2">
+                  <span className="rounded-full border border-[rgba(34,197,94,.25)] bg-[rgba(34,197,94,.15)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4ADE80]">
+                    Eligible
+                  </span>
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[rgba(59,130,246,.12)] text-[#38BDF8] shadow-lg shadow-blue-500/10">
+                    <Crown size={20} />
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleVipAccess}
+                className="w-full rounded-xl bg-gradient-to-r from-[#06B6D4] to-[#3B82F6] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(59,130,246,0.18)] transition-transform duration-200 hover:scale-[1.03] hover:brightness-110 active:scale-[1.01]"
+              >
+                Join VIP
+              </button>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

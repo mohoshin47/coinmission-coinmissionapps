@@ -24,6 +24,11 @@ export default function Earn() {
   const [countryMessage, setCountryMessage] = useState('');
   const firstLoad = useRef(false);
 
+  const isVipEligible =
+    user?.vipuser === true ||
+    (user?.totalAdsClicked ?? 0) >= 5 ||
+    (user?.totalAdsShow ?? 0) >= 10;
+
   useEffect(() => {
   if (!user?.telegramId || !config) return;
   if (firstLoad.current) return;
@@ -115,7 +120,7 @@ export default function Earn() {
         {/* <User_Profile_Card user={user} /> */}
         <ProfileCardProps user={user} />
 
-        {user?.vipuser ? (
+        {isVipEligible ? (
           <div className="mt-3">
             {/* <RewardCard /> */}
 
@@ -124,6 +129,7 @@ export default function Earn() {
               rewardAmount={config?.daily?.daily_checkin ?? 0}
               totalTasks={config?.daily?.daily_task_target ?? 0}
               loading={claimLoading}
+              countryBlocked={countryBlocked}
             />
           </div>
         ) : null}

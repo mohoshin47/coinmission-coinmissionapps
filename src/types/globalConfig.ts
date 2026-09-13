@@ -23,6 +23,7 @@ export interface GlobalConfig {
   contractus: string;
   creator: creator;
   vpnalllowed: boolean;
+  refer_commition: number;
  
 }
 
@@ -31,6 +32,7 @@ export interface Daily{
   daily_checkin:number;
   daily_link:string;
   breaktime: number;
+  taskonoff: boolean;
 }
 
 export interface adSettings{
